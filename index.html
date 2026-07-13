@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidate-Fit Matcher — Case File</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper-dark:#E2D8C2;
+    --ink:#1F2A24;
+    --ink-soft:#4A5750;
+    --stamp-red:#A63A2E;
+    --stamp-green:#3F6C51;
+    --line:#B8AD95;
+    --card:#F5F0E4;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(0,0,0,0.02) 0, transparent 40%),
+      radial-gradient(circle at 80% 60%, rgba(0,0,0,0.02) 0, transparent 40%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- Folder tab header ---------- */
+  .tab-header{
+    max-width:880px;
+    margin:32px auto 0;
+    padding:0 24px;
+  }
+  .tab{
+    display:inline-block;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-bottom:none;
+    padding:8px 18px 6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    border-radius:6px 6px 0 0;
+  }
+  .folder{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:2px 10px 10px 10px;
+    padding:48px 40px 40px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.03), 0 8px 24px rgba(31,42,36,0.06);
+  }
+  header h1{
+    font-family:'Special Elite', monospace;
+    font-size:clamp(28px, 5vw, 44px);
+    margin:0 0 6px;
+    letter-spacing:0.01em;
+  }
+  header .case-no{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--stamp-red);
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  header p.lede{
+    max-width:560px;
+    font-size:17px;
+    color:var(--ink-soft);
+    margin-top:16px;
+  }
+  .stamp-row{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;}
+  .stamp{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    border:2px solid var(--stamp-green);
+    color:var(--stamp-green);
+    padding:4px 10px;
+    border-radius:3px;
+    transform:rotate(-2deg);
+  }
+  .stamp.alt{border-color:var(--ink-soft);color:var(--ink-soft);transform:rotate(1.5deg);}
+
+  /* ---------- Section shell ---------- */
+  section{max-width:880px;margin:28px auto;padding:0 24px;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:32px 36px;
+  }
+  h2{
+    font-family:'Special Elite', monospace;
+    font-size:20px;
+    margin:0 0 18px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  h2 .no{color:var(--stamp-red);font-family:'IBM Plex Mono',monospace;font-size:14px;}
+
+  /* ---------- Index cards for "what's inside" ---------- */
+  .index-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .index-card{
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px 16px 14px;
+    position:relative;
+  }
+  .index-card .step{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--stamp-red);
+    letter-spacing:0.08em;
+  }
+  .index-card h3{font-size:15px;margin:8px 0 6px;}
+  .index-card p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  @media (max-width:680px){.index-cards{grid-template-columns:1fr;}}
+
+  /* ---------- Live demo ---------- */
+  label{display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.05em;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;}
+  textarea{
+    width:100%;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink);
+    resize:vertical;
+    margin-bottom:16px;
+  }
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:680px){.demo-grid{grid-template-columns:1fr;}}
+  button.run{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-size:13px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:12px 22px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:transform 0.1s ease;
+  }
+  button.run:hover{transform:translateY(-1px);}
+  button.run:active{transform:translateY(0);}
+  .note{font-size:12.5px;color:var(--ink-soft);margin-top:10px;}
+
+  #results{margin-top:24px;display:flex;flex-direction:column;gap:12px;}
+  .result-card{
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px 18px;
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .result-rank{
+    font-family:'Special Elite',monospace;
+    font-size:22px;
+    color:var(--ink-soft);
+    min-width:28px;
+  }
+  .result-body{flex:1;}
+  .result-name{font-weight:600;font-size:14.5px;}
+  .result-terms{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  .score-stamp{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    border:2px solid var(--stamp-green);
+    color:var(--stamp-green);
+    padding:3px 8px;
+    border-radius:3px;
+    white-space:nowrap;
+    align-self:center;
+    transform:rotate(-2deg);
+  }
+  .score-stamp.low{border-color:var(--line);color:var(--ink-soft);}
+
+  /* ---------- Get the code ---------- */
+  .code-paths{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media (max-width:680px){.code-paths{grid-template-columns:1fr;}}
+  .path-card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px;
+    background:var(--paper-dark);
+  }
+  .path-card h3{margin:0 0 8px;font-size:15px;}
+  .path-card p{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;}
+  pre{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    padding:14px 16px;
+    border-radius:4px;
+    overflow-x:auto;
+    margin:0;
+  }
+  a.btn{
+    display:inline-block;
+    margin-top:12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    border-bottom:2px solid var(--stamp-red);
+    text-decoration:none;
+    padding-bottom:2px;
+  }
+
+  footer{max-width:880px;margin:40px auto 60px;padding:0 24px;font-size:13px;color:var(--ink-soft);}
+  footer a{color:var(--ink);}
+  .divider{border:none;border-top:1px dashed var(--line);margin:0 0 20px;}
+</style>
+</head>
+<body>
+
+<div class="tab-header">
+  <span class="tab">CASE FILE 001 — RECRUITING × RAG</span>
+</div>
+
+<div class="wrap">
+  <div class="folder">
+    <header>
+      <div class="case-no">Open case · candidate-fit matcher</div>
+      <h1>Does this résumé actually fit the job?</h1>
+      <p class="lede">
+        A small Retrieval-Augmented Generation demo that reads a job description and a stack of
+        résumés, ranks them by real semantic similarity, and explains — in plain language — why
+        each top match earned its spot. Built by a recruiter who also writes the retrieval code.
+      </p>
+      <div class="stamp-row">
+        <span class="stamp">RAG</span>
+        <span class="stamp">SENTENCE-TRANSFORMERS</span>
+        <span class="stamp alt">GRADIO</span>
+        <span class="stamp alt">RUNS FREE, NO SERVER</span>
+      </div>
+    </header>
+  </div>
+</div>
+
+<section>
+  <div class="card">
+    <h2><span class="no">01</span> What it does</h2>
+    <div class="index-cards">
+      <div class="index-card">
+        <span class="step">STEP 1</span>
+        <h3>Embeds</h3>
+        <p>The job description and every résumé are converted to vectors with a sentence-transformer model — meaning is captured, not just keywords.</p>
+      </div>
+      <div class="index-card">
+        <span class="step">STEP 2</span>
+        <h3>Retrieves</h3>
+        <p>Résumés are ranked by cosine similarity to the job vector. This is the "R" in RAG — pulling the most relevant candidates before any generation happens.</p>
+      </div>
+      <div class="index-card">
+        <span class="step">STEP 3</span>
+        <h3>Explains</h3>
+        <p>Each top match gets a short, grounded explanation — LLM-generated if a token is configured, or an honest keyword-overlap fallback if not. Nothing is invented.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2><span class="no">02</span> Try the lightweight version, right here</h2>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin-top:-8px;">
+      This in-page demo runs entirely in your browser using TF-IDF weighted cosine similarity —
+      no model download, no server, so it can live on a free static page. The full app
+      (linked below) swaps this for real transformer embeddings and optional LLM explanations.
+    </p>
+    <div class="demo-grid">
+      <div>
+        <label>Job description</label>
+        <textarea id="jobInput" rows="7"></textarea>
+      </div>
+      <div>
+        <label>Résumés (separate with a line of ---)</label>
+        <textarea id="resumeInput" rows="7"></textarea>
+      </div>
+    </div>
+    <button class="run" id="runBtn">Find best matches</button>
+    <div class="note">Pre-filled with an example job + three example résumés — just click the button.</div>
+    <div id="results"></div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2><span class="no">03</span> Get the code</h2>
+    <div class="code-paths">
+      <div class="path-card">
+        <h3>Run the full app locally</h3>
+        <p>Real sentence-transformer embeddings, optional LLM explanations, full Gradio UI — clone it and run it on your machine, free, no account needed.</p>
+        <pre>git clone &lt;your-github-repo-url&gt;
+cd candidate-fit-matcher
+pip install -r requirements.txt
+python app.py</pre>
+        <a class="btn" href="#" id="githubLink">View on GitHub →</a>
+      </div>
+      <div class="path-card">
+        <h3>Read how it's built</h3>
+        <p>The repo README covers the architecture, the two explanation modes, and the honest limitations — written the way you'd want a teammate to document a real project.</p>
+        <a class="btn" href="#" id="readmeLink">Read the README →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <hr class="divider">
+  Built by <a href="https://www.linkedin.com/in/syed-sibte-hassan-shah-63b214371" target="_blank">Syed Sibte Hassan Shah</a>
+  — international recruiter and AI automation specialist, applying RAG and NLP to real recruiting workflows.
+</footer>
+
+<script>
+const EXAMPLE_JOB = "Senior Recruiter needed with experience in full-lifecycle international hiring, ATS management (Greenhouse, Bullhorn), Boolean search, and exposure to AI-powered sourcing tools. EMEA and APAC coordination a plus.";
+const EXAMPLE_RESUMES = `Name: Amina Farouk
+5 years as an international recruiter managing full-lifecycle hiring across EMEA. Skilled in Boolean search, Greenhouse ATS, and LinkedIn Recruiter. Coordinated hiring across 4 time zones.
+---
+Name: Wei Zhang
+Backend engineer with 6 years building REST APIs in Node.js and Python. Some exposure to internal hiring panels but no formal recruiting role.
+---
+Name: Carlos Mendes
+Talent acquisition specialist with 3 years experience, APAC-focused sourcing, AI sourcing tool adoption, and Bullhorn ATS documentation.`;
+
+document.getElementById('jobInput').value = EXAMPLE_JOB;
+document.getElementById('resumeInput').value = EXAMPLE_RESUMES;
+
+const STOPWORDS = new Set(["the","a","an","and","or","of","to","in","for","with","on","is","are","as","at","by","be","this","that","will","we","you","your","our","it","from","have","has","who","years","experience","role","job","candidate","candidates","team"]);
+
+function tokenize(text){
+  const words = text.toLowerCase().match(/[a-z][a-z\-\+]{2,}/g) || [];
+  return words.filter(w => !STOPWORDS.has(w));
+}
+
+function parseResumes(raw){
+  const blocks = raw.trim().split(/\n-{3,}\n/);
+  return blocks.map((block, i) => {
+    block = block.trim();
+    let name = "Candidate " + (i+1);
+    const firstLine = block.split("\n")[0];
+    if (firstLine.toLowerCase().startsWith("name:")) {
+      name = firstLine.split(":").slice(1).join(":").trim();
+      block = block.split("\n").slice(1).join("\n");
+    }
+    return { name, text: block };
+  }).filter(c => c.text.trim().length > 0);
+}
+
+function tfidfVectors(docsTokens){
+  const df = {};
+  docsTokens.forEach(tokens => {
+    new Set(tokens).forEach(t => df[t] = (df[t]||0) + 1);
+  });
+  const N = docsTokens.length;
+  return docsTokens.map(tokens => {
+    const tf = {};
+    tokens.forEach(t => tf[t] = (tf[t]||0) + 1);
+    const vec = {};
+    Object.keys(tf).forEach(t => {
+      const idf = Math.log((N + 1) / (df[t] + 1)) + 1;
+      vec[t] = tf[t] * idf;
+    });
+    return vec;
+  });
+}
+
+function cosineSim(a, b){
+  let dot = 0, normA = 0, normB = 0;
+  for (const k in a){ normA += a[k]*a[k]; if (b[k]) dot += a[k]*b[k]; }
+  for (const k in b){ normB += b[k]*b[k]; }
+  if (normA === 0 || normB === 0) return 0;
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+function sharedTerms(jobTokens, resumeTokens, topN=6){
+  const jobSet = new Set(jobTokens);
+  const resumeSet = new Set(resumeTokens);
+  const shared = [...jobSet].filter(t => resumeSet.has(t)).sort().slice(0, topN);
+  return shared;
+}
+
+document.getElementById('runBtn').addEventListener('click', () => {
+  const jobText = document.getElementById('jobInput').value;
+  const resumesRaw = document.getElementById('resumeInput').value;
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = "";
+
+  if (!jobText.trim()) {
+    resultsEl.innerHTML = '<div class="note">Enter a job description first.</div>';
+    return;
+  }
+  const candidates = parseResumes(resumesRaw);
+  if (candidates.length === 0) {
+    resultsEl.innerHTML = '<div class="note">Enter at least one résumé, separated by a line of ---.</div>';
+    return;
+  }
+
+  const allTexts = [jobText, ...candidates.map(c => c.text)];
+  const allTokens = allTexts.map(tokenize);
+  const vectors = tfidfVectors(allTokens);
+  const jobVec = vectors[0];
+  const jobTokens = allTokens[0];
+
+  const scored = candidates.map((c, i) => ({
+    name: c.name,
+    score: cosineSim(jobVec, vectors[i+1]),
+    shared: sharedTerms(jobTokens, allTokens[i+1])
+  }));
+  scored.sort((a,b) => b.score - a.score);
+
+  scored.forEach((r, rank) => {
+    const div = document.createElement('div');
+    div.className = 'result-card';
+    const stampClass = r.score > 0.15 ? '' : 'low';
+    div.innerHTML = `
+      <div class="result-rank">${rank+1}</div>
+      <div class="result-body">
+        <div class="result-name">${r.name}</div>
+        <div class="result-terms">${r.shared.length ? 'Shared terms: ' + r.shared.join(', ') : 'No strong keyword overlap — score reflects overall term weighting.'}</div>
+      </div>
+      <div class="score-stamp ${stampClass}">score ${r.score.toFixed(3)}</div>
+    `;
+    resultsEl.appendChild(div);
+  });
+});
+</script>
+
+</body>
+</html>
